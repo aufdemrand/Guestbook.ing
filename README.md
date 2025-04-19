@@ -2,7 +2,7 @@
 
 A simple SaaS guestbook for event participants.
 
-**Visit the live application:** [www.guestbook.ing](www.guestbook.ing)
+**Visit the live application:** [www.guestbook.ing](https://www.guestbook.ing)
 
 ## Overview
 
