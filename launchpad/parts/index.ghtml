@@ -1,0 +1,79 @@
+<%@ page import="documents.Guestbook" %>
+
+/// Render this page based on whether it was a GET request or POST request
+
+<% if (context.method == 'GET') { %>
+
+///
+/// This is the main page of the guestbook. It will show a form to
+/// create a new guestbook.
+///
+
+<details open class='bordered padded-more white centered narrow-width'>
+    <summary class="pointer"><strong>Make a new Guestbook</strong></summary>
+    <p class='more-block-margin text-spaced'>
+        Enter the details of your event to provide a guestbook to your visitors.
+    </p>
+    <panel>
+        <form action='index.html' method='POST'>
+            <input name='name' required
+                   type='text'
+                   autocomplete='off'
+                   placeholder='Enter the name of your event'>
+            <label for='email'>Your email:</label>
+            <input name='email'
+                   id='email'
+                   type='email'
+                   placeholder='Optional'>
+            <flex class='spread'><span></span><button type='submit'>Done</button></flex>
+        </form>
+    </panel>
+</details>
+
+///
+/// This is what's shown when a new guestbook is created.
+/// It will show a QR code that links to the guestbook.
+///
+
+<% } else if (context.method == 'POST') {
+
+    Guestbook gb = Guestbook.getNew('guestbooks') as Guestbook
+
+    gb.info.name = data.name
+    gb.info.email = data.email
+    gb.info.owner_cookie = cookies.get('spaceport-uuid')
+    gb.info.open = true // Default to open, so it can be signed!
+
+    gb.save()
+
+%>
+
+<details open class='bordered padded-more white centered narrow-width'>
+    <summary class="pointer"><strong>Guestbook for ${ data.name }</strong></summary>
+    <p class='more-block-margin text-spaced'>
+        Scan the QR code below to access the guestbook.
+    </p>
+    <panel>
+        <div id='qrcode' class='centered more-bottom-margin'></div>
+        <script type='text/javascript'>
+            var qrcode = new QRCode(document.getElementById('qrcode'), {
+                text: 'https://www.guestbook.ing/${ gb._id }',
+                width: 256,
+                height: 256,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        </script>
+        <flex class='spread'><span></span>
+            <button on-click=${ _{ [ '@redirect' : 'g/' + gb._id] }}>
+                View Guestbook
+            </button>
+        </flex>
+    </panel>
+</details>
+
+<% } %>
+
+
+

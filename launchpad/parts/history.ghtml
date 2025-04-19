@@ -1,0 +1,69 @@
+<%@ page import="documents.Guestbook; spaceport.computer.memory.physical.View" %>
+
+<% if (context.method == 'POST') return %>
+
+///
+/// This page will be loaded as a part along with index.ghtml
+/// and shows the guestbooks that the user has made, or signed.
+///
+
+<%
+    // Grab a view of the guestbooks
+    def guestbooks = View.get('views', 'all', 'guestbooks').rows as List
+    // Grab the unique cookie to identify the user
+    def cookie = cookies.'spaceport-uuid'
+
+    // Find all of the guestbooks that the user has created
+    def userGuestbooks = guestbooks.findAll {
+        def info = it.value.info as Guestbook.GuestbookInfoSchema
+        if (info.owner_cookie == cookie) {
+            return true
+        }
+    }
+
+    // Find all of the guestbooks that the user has signed
+    def signedGuestbooks = guestbooks.findAll {
+        // The view contains a list of participant cookies
+        List participants = it.value.participants
+        for (def participant_cookie in participants) {
+            if (participant_cookie == cookie) {
+                return true
+            }
+        }
+    }
+
+%>
+
+<panel class="narrow-width centered way-more-bottom-margin">
+
+<% if (userGuestbooks.size() > 0) { %>
+    <h6 class='way-more-top-margin'>Your guestbooks:</h6>
+
+    <script>
+        // Only show the create window if there are no guestbooks
+        document.querySelector('details').removeAttribute('open')
+    </script>
+
+    ${ userGuestbooks.combine { """
+    <div class='way-less-block-margin'>
+        <a href='/g/${ it.id }'>
+            <strong>${ it.value.info.name }</strong>
+        </a>
+    </div>
+    """}}
+
+<% } %>
+
+
+<% if (signedGuestbooks.size() > 0) { %>
+    <h6 class='way-more-top-margin'>Guestbooks you have signed:</h6>
+    ${ signedGuestbooks.combine { """
+    <div class='way-less-block-margin'>
+        <a href='/g/${ it.id }'>
+            <strong>${ it.value.info.name }</strong>
+        </a>
+    </div>
+    """}}
+<% } %>
+
+</panel>

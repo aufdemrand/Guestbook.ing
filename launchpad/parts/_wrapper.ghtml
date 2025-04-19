@@ -1,0 +1,35 @@
+///
+///  Provides a vessel (wrapper) for the guestbook pages.
+///
+
+<html>
+
+<head>
+    <title>Guestbook.ing</title>
+    <link rel='stylesheet' href='/assets/spacewalk.css'>
+    <script src='/assets/qrcode.min.js' type='application/javascript'></script>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+</head>
+
+<body>
+    <a href='/'>
+        <img class='padded-more centered'
+             src='/assets/logo.svg'
+             style='width: 20em;'>
+    </a>
+
+    <main>
+        /// Launchpad will insert the 'parts' here
+        <payload/>
+    </main>
+
+    <footer>
+        <span>Made by Jeremy at the <a href='https://toledotechloft.com'>Toledo Tech Loft</a></span>
+    </footer>
+</body>
+
+<script src='/assets/hud-core-1.0.67.min.js' type='application/javascript'></script>
+
+</html>
+
+

@@ -1,0 +1,165 @@
+<%@ page import="spaceport.computer.memory.physical.Document; spaceport.Spaceport; documents.Guestbook" %>
+
+<%
+    ///
+    /// This is a server code block. It uses groovy (or Java) to run code
+    /// on the server. This is where you can do things like access the database,
+    /// create new documents, and manipulate data. The code here will be
+    /// executed before the HTML is sent to the client, and the user will not
+    /// see any of this code, unlike client-side JavaScript.
+    ///
+
+    def guestbook_id = r.matches[0]  // The ID of the guestbook, extracted from the URL
+
+    // Grab the guestbook document from the database (guestbooks)
+    def gb = Document.get(guestbook_id, 'guestbooks') as Guestbook
+    // Grab the unique cookie to identify the user
+    def cookie = cookies.'spaceport-uuid'
+
+%>
+
+///
+/// This page will be inserted into the _wrapper page by Launchpad.
+
+<details class='bordered padded-more white centered narrow-width'>
+    <summary><strong>Guestbook for ${{ gb.info.name }}</strong></summary>
+
+    <p class='block-margin text-spaced'>
+        Scan the QR code below to access the guestbook on your device.
+    </p>
+
+    <panel>
+        /// Render the QR code using the qrcode.min.js library
+        <div id='qrcode' class='centered block-margin'></div>
+        <script type='text/javascript'>
+            var qrcode = new QRCode(document.getElementById('qrcode'), {
+                text: 'https://www.guestbook.ing/g/${ gb._id }',
+                width: 256,
+                height: 256,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        </script>
+    </panel>
+</details>
+
+<panel class='narrow-width more-block-margin centered'>
+
+    /// Render interaction options based on the user's status
+
+    <% if (gb.isOwner(cookie)) { %>
+
+    <% // Provide a closure to handle the owner editing the guestbook
+    def editGuestbook = { t -> // 't' represents the transmission of data from the form
+        gb.info.name = t.name.clean()    // Sanitize the name input
+        gb.info.open = t.getBool('open') // Coerce the value to a boolean
+        gb.save()
+        [ '@reload' ] // Reloads the page
+    } %>
+
+    /// If the user is the owner of the guestbook, show the form to edit it.
+    <details class='bordered padded-more white centered narrow-width'>
+        <summary><strong>Edit the guestbook</strong></summary>
+        <panel class='top-margin'>
+        <form on-submit=${ _{ t -> editGuestbook(t) }}>
+            <label for='event-name'>Event Name:</label>
+            <input name='name' required
+                   type='text'
+                   id='event-name'
+                   autocomplete='off'
+                   placeholder='Enter the name of your event'
+                   value="${ gb.info.name.escape() }">
+            <flex>
+                <input type='checkbox'
+                   name='open'
+                   id='open'
+                   ${ gb.info.open ? 'checked' : '' }>
+                <label for='open'>Open for signing</label>
+            </flex>
+            <flex class='spread'><span></span><button type='submit'>Update</button></flex>
+        </form>
+        </panel>
+    </details>
+
+    <% } else if (!gb.hasParticipant(cookie) && gb.isOpen()) { %>
+
+    /// If the user hasn't signed the guestbook yet, show the form to sign it.
+    <strong>Sign the guestbook.</strong>
+    <form on-submit='${ _{ t -> gb.addParticipant(t.name, t.email, t.getBool('public'), cookie); [ '@reload' ] }}'>
+        <input name='name' required
+               type='text'
+               autocomplete='off'
+               placeholder='Enter your name'>
+        <input name='email'
+               type='email'
+               placeholder='Enter your email (optional)'>
+        <flex><input type='checkbox' checked
+               name='public'
+               id='public_email'>
+            <label for='public_email'>Show email publicly</label></flex>
+        <flex class='spread'><span></span><button type='submit'>Done</button></flex>
+    </form>
+
+    <% } else { %>
+
+    /// Otherwise...
+    <strong>You've already signed this guestbook.</strong>
+
+    <% } %>
+
+</panel>
+
+
+/// If the guestbook is closed, show a message indicating that.
+${{ "<strong class='top-margin'>Guestbook is closed.</strong>".if { !gb.isOpen() } }}
+
+
+<panel class='narrow-width more-block-margin centered padded'>
+
+    /// If the guestbook owner is the user, show the list of participants
+    /// with an option to delete them.
+
+    <% if (gb.isOwner(cookie)) { %>
+
+    ${{ gb.participants.combine { Guestbook.ParticipantSchema participant ->
+        """
+        <div class='narrow-width text-spaced way-less-block-margin'>
+            <strong>${ participant.name }</strong>
+            /// If the participant has a public email, show it
+            ${ participant.email ?: '' }
+            /// If the participant is the current user, show "(You!)"
+            <span target='parent' style='cursor: pointer; user-select: none;'
+                  on-click=${ _{ gb.removeParticipant(participant.cookie); [ '@remove' ] }}>
+                🗑️ </span>
+            <br>
+            ${ participant.time_signed.relativeTime() }
+        </div>
+        """ }
+    }}
+
+    <% } else { %>
+
+    /// If the user is just a guest to the guestbook,
+    /// show a list of participants who have signed the guestbook.
+
+    ${{ gb.participants.combine { participant ->
+        """
+        <div class='narrow-width text-spaced way-less-block-margin'>
+            <strong>${ participant.name }</strong>
+            /// If the participant has a public email, show it
+            ${ (participant.email ?: '').if { participant.public_email } }
+            /// If the participant is the current user, show "(You!)"
+            ${ '(You!)'.if { participant.cookie == cookie }}
+            <br>
+            ${ participant.time_signed.relativeTime() }
+        </div>
+        """ }
+    }}
+
+    <% } %>
+
+    /// If there are no participants, show a message indicating that.
+    ${{ "No signatures yet!".if { gb.participants.size() == 0 && gb.isOpen() } }}
+
+</panel>
