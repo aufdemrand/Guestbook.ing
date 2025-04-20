@@ -57,7 +57,7 @@
         <div id='qrcode' class='centered more-bottom-margin'></div>
         <script type='text/javascript'>
             var qrcode = new QRCode(document.getElementById('qrcode'), {
-                text: 'https://www.guestbook.ing/${ gb._id }',
+                text: 'https://www.guestbook.ing/g/${ gb._id }',
                 width: 256,
                 height: 256,
                 colorDark: '#000000',

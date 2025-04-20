@@ -1,3 +1,4 @@
+<%@ page import="spaceport.computer.memory.physical.Document; spaceport.computer.memory.virtual.Cargo" %>
 ///
 ///  Provides a vessel (wrapper) for the guestbook pages.
 ///
@@ -24,7 +25,8 @@
     </main>
 
     <footer>
-        <span>Made by Jeremy at the <a href='https://toledotechloft.com'>Toledo Tech Loft</a></span>
+        <span>Made by <a href="https://www.aufdem.dev">Jeremy</a> at the <a href='https://toledotechloft.com'>Toledo Tech Loft</a></span>
+        <span style="margin-left: auto">${ Cargo.fromDocument(Document.get('stats', 'guestbooks')).inc() }</span>
     </footer>
 </body>
 

@@ -112,7 +112,7 @@
 
 
 /// If the guestbook is closed, show a message indicating that.
-${{ "<strong class='top-margin'>Guestbook is closed.</strong>".if { !gb.isOpen() } }}
+${{ "<div class='centered narrow-width top-margin'><strong>Guestbook is closed.</strong></div>".if { !gb.isOpen() } }}
 
 
 <panel class='narrow-width more-block-margin centered padded'>
