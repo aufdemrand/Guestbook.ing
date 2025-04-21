@@ -6,7 +6,7 @@ A simple SaaS guestbook for event participants.
 
 ## Overview
 
-Guestbook.ing provides event holders with a straightforward way to collect details from their attendees. Participants can easily leave their names and email in a digital guestbook that the event organizer can then view.
+Guestbook.ing provides event holders with a straightforward way to collect details from their attendees. Participants can easily leave their names, email, and a message for the host in a digital guestbook that the event organizer can then view.
 
 ## Built With Spaceport
 
@@ -22,8 +22,9 @@ The majority of this project was live-coded during a Toledo.codes event held at 
 
 ## Features
 
-* Simple and intuitive interface for guests to leave details.
-* Easy-to-share QR-CODE for event holders to distribute.
+* Simple and intuitive interface for guests to leave details and messages.
+* Generates an easy-to-share QR-CODE for event holders to distribute.
+* Ability to prints a poster for the event holder with the QR-CODE on it.
 * Interface for event holders to view/delete entries, edit details, and open and close the guestbook.
 * History for showing events that guests have signed, or created.
 
