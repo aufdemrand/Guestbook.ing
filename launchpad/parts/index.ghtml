@@ -49,7 +49,7 @@
 %>
 
 <details open class='bordered padded-more white centered narrow-width'>
-    <summary class="pointer"><strong>Guestbook for ${ data.name }</strong></summary>
+    <summary class="pointer"><strong>Guestbook for <span id='guestbook-name'>${ data.name }</span></strong></summary>
     <p class='more-block-margin text-spaced'>
         Scan the QR code below to access the guestbook.
     </p>
@@ -65,7 +65,10 @@
                 correctLevel: QRCode.CorrectLevel.H
             });
         </script>
-        <flex class='spread'><span></span>
+        <flex class='spread'>
+            <button on-click="${ _{ [ '@print' ] }}">
+                Print Poster
+            </button>
             <button on-click=${ _{ [ '@redirect' : 'g/' + gb._id] }}>
                 View Guestbook
             </button>
@@ -74,6 +77,3 @@
 </details>
 
 <% } %>
-
-
-

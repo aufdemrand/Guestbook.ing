@@ -68,6 +68,7 @@ class Guestbook extends Document {
         String name          // Participant name
         String email         // Participant email
         Boolean public_email // Whether the email is public (true) or not (false)
+        String message       // Participant message
         Long time_signed     // Time signed
         String cookie        // Participant UUID
     }
@@ -82,13 +83,14 @@ class Guestbook extends Document {
 
 
     // Add a participant to the guestbook
-    void addParticipant(String name, String email, Boolean public_email, String cookie) {
+    void addParticipant(String name, String email, Boolean public_email, String message, String cookie) {
 
         if (!isOpen()) return // If the guestbook is not open, do not add a participant
 
         def participant = new ParticipantSchema()
                 .tap {
-            it.name = name.clean()    // Clean these variables to prevent XSS
+            it.name = name.clean()    // Clean String variables to prevent XSS
+            it.message = message.clean()
             it.email = email.clean()
             it.public_email = public_email
             it.time_signed = System.currentTimeMillis()

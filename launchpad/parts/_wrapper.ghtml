@@ -8,8 +8,20 @@
 <head>
     <title>Guestbook.ing</title>
     <link rel='stylesheet' href='/assets/spacewalk.css'>
+    /// Provide a CSS file for the printing a poster for the guestbook
+    <link rel='stylesheet' href='/assets/print.css?${ 6.randomID() }'>
     <script src='/assets/qrcode.min.js' type='application/javascript'></script>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    /// Page meta tags for SEO/discoverability
+    <meta name='description' content="Create a digital guestbook for your event with Guestbook.ing. It's simple and easy to use for visitors to leave their messages.">
+    <meta name='keywords' content='guestbook, digital guestbook, event guestbook, online guestbook, visitor messages, wedding, party, seminar, conference, event planning'>
+    <meta name='author' content='Jeremy Schroeder'>
+    <meta name='robots' content='index, follow'>
+    <meta charset="UTF-8">
+    <meta property="og:title" content="Guestbook.ing - Create a Digital Guestbook for Your Event">
+    <meta property="og:description" content="Provide a simple and easy-to-use digital guestbook for your event. Collect visitor messages online with Guestbook.ing.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.guestbook.ing">
 </head>
 
 <body>
@@ -33,5 +45,3 @@
 <script src='/assets/hud-core-1.0.67.min.js' type='application/javascript'></script>
 
 </html>
-
-

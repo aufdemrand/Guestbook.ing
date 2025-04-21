@@ -22,7 +22,7 @@
 /// This page will be inserted into the _wrapper page by Launchpad.
 
 <details class='bordered padded-more white centered narrow-width'>
-    <summary><strong>Guestbook for ${{ gb.info.name }}</strong></summary>
+    <summary class='pointer'><strong>Guestbook for <span id='guestbook-name'>${{ gb.info.name }}</span></strong></summary>
 
     <p class='block-margin text-spaced'>
         Scan the QR code below to access the guestbook on your device.
@@ -41,10 +41,16 @@
                 correctLevel: QRCode.CorrectLevel.H
             });
         </script>
+        <flex class='spread'>
+            <span></span>
+            <button on-click="${ _{ [ '@print' ] }}">
+                Print Poster
+            </button>
+        </flex>
     </panel>
 </details>
 
-<panel class='narrow-width more-block-margin centered'>
+<panel id='edit-guestbook-panel' class='narrow-width more-block-margin centered'>
 
     /// Render interaction options based on the user's status
 
@@ -60,7 +66,7 @@
 
     /// If the user is the owner of the guestbook, show the form to edit it.
     <details class='bordered padded-more white centered narrow-width'>
-        <summary><strong>Edit the guestbook</strong></summary>
+        <summary class='pointer'><strong>Edit the guestbook</strong></summary>
         <panel class='top-margin'>
         <form on-submit=${ _{ t -> editGuestbook(t) }}>
             <label for='event-name'>Event Name:</label>
@@ -86,7 +92,7 @@
 
     /// If the user hasn't signed the guestbook yet, show the form to sign it.
     <strong>Sign the guestbook.</strong>
-    <form on-submit='${ _{ t -> gb.addParticipant(t.name, t.email, t.getBool('public'), cookie); [ '@reload' ] }}'>
+    <form on-submit='${ _{ t -> gb.addParticipant(t.name, t.email, t.getBool('public'), t.message, cookie); [ '@reload' ] }}'>
         <input name='name' required
                type='text'
                autocomplete='off'
@@ -97,7 +103,9 @@
         <flex><input type='checkbox' checked
                name='public'
                id='public_email'>
-            <label for='public_email'>Show email publicly</label></flex>
+            <label for='public_email'>Show email publicly</label>
+        </flex>
+        <textarea placeholder="Leave a message for the host (optional)" name="message" rows="4"></textarea>
         <flex class='spread'><span></span><button type='submit'>Done</button></flex>
     </form>
 
@@ -112,10 +120,10 @@
 
 
 /// If the guestbook is closed, show a message indicating that.
-${{ "<div class='centered narrow-width top-margin'><strong>Guestbook is closed.</strong></div>".if { !gb.isOpen() } }}
+${{ "<div id='closed-guestbook-notice' class='centered narrow-width top-margin padded'><strong>Guestbook is closed.</strong></div>".if { !gb.isOpen() } }}
 
 
-<panel class='narrow-width more-block-margin centered padded'>
+<panel id='guestbook-entries' class='narrow-width more-block-margin centered padded'>
 
     /// If the guestbook owner is the user, show the list of participants
     /// with an option to delete them.
@@ -131,9 +139,9 @@ ${{ "<div class='centered narrow-width top-margin'><strong>Guestbook is closed.<
             /// If the participant is the current user, show "(You!)"
             <span target='parent' style='cursor: pointer; user-select: none;'
                   on-click=${ _{ gb.removeParticipant(participant.cookie); [ '@remove' ] }}>
-                🗑️ </span>
-            <br>
+                🗑️ </span><br>
             ${ participant.time_signed.relativeTime() }
+            ${ "<br><p>${ participant.message}</p>".if { participant.message } }
         </div>
         """ }
     }}

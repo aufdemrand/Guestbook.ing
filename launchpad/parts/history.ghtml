@@ -34,7 +34,7 @@
 
 %>
 
-<panel class="narrow-width centered way-more-bottom-margin">
+<panel class='narrow-width centered way-more-bottom-margin padded'>
 
 <% if (userGuestbooks.size() > 0) { %>
     <h6 class='way-more-top-margin'>Your guestbooks:</h6>

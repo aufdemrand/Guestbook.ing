@@ -1,0 +1,52 @@
+/*
+ * This file is used to 'print' the guestbook poster.
+ */
+
+
+@media print {
+
+    body {
+        zoom: 1.4;
+    }
+
+    #qrcode {
+        display: block !important;
+    }
+
+    details::details-content {
+        display: contents;
+    }
+
+    details summary::-webkit-details-marker {
+        display:none;
+    }
+
+    details summary {
+        display: block;
+        width: 100%;
+        font-size: 1px;
+        color: white;
+    }
+
+    #guestbook-name {
+        display: block;
+        font-size: 1.75rem !important;
+        text-align: center;
+        color: black;
+    }
+
+    p {
+        margin-block: 2.5em;
+        padding-inline: 2.5em;
+        margin-bottom: 2em;
+    }
+
+    flex {
+        display: none;
+    }
+
+    #edit-guestbook-panel, #guestbook-entries, #closed-guestbook-notice {
+        display: none;
+    }
+
+}
