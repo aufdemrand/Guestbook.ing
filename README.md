@@ -24,7 +24,7 @@ The majority of this project was live-coded during a Toledo.codes event held at 
 
 * Simple and intuitive interface for guests to leave details and messages.
 * Generates an easy-to-share QR-CODE for event holders to distribute.
-* Ability to prints a poster for the event holder with the QR-CODE on it.
+* Ability to print a poster for the event holder with the QR-CODE on it.
 * Interface for event holders to view/delete entries, edit details, and open and close the guestbook.
 * History for showing events that guests have signed, or created.
 
