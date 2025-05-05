@@ -1,6 +1,6 @@
 # Guestbook.ing
 
-A simple SaaS guestbook for event participants.
+A simple SaaS guestbook for parties, events and get-togethers.
 
 **Visit the live application:** [www.guestbook.ing](https://www.guestbook.ing)
 
