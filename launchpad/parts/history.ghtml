@@ -8,9 +8,9 @@
 ///
 
 <%
-    // Grab a view of the guestbooks
+    // Grab a view of the guestbooks currently defined in the database
     def guestbooks = View.get('views', 'all', 'guestbooks').rows as List
-    // Grab the unique cookie to identify the user
+    // Grab the unique session cookie to identify the user
     def cookie = cookies.'spaceport-uuid'
 
     // Find all of the guestbooks that the user has created
@@ -63,7 +63,7 @@
             <strong>${ it.value.info.name }</strong>
         </a>
     </div>
-    """}}
+    """ }}
 <% } %>
 
 </panel>
