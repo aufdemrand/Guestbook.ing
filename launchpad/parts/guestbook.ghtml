@@ -9,11 +9,13 @@
     /// see any of this code, unlike client-side JavaScript.
     ///
 
-    def guestbook_id = r.matches[0]  // The ID of the guestbook, extracted from the URL
+    // The ID of the guestbook, extracted from the match group in the URL
+    def guestbook_id = r.matches[0]  
 
     // Grab the guestbook document from the database (guestbooks)
     def gb = Document.get(guestbook_id, 'guestbooks') as Guestbook
-    // Grab the unique cookie to identify the user
+    // Grab the unique cookie to identify the user's session
+    // Spaceport uses automatically sets a 'spaceport-uuid' cookie
     def cookie = cookies.'spaceport-uuid'
 
 %>
@@ -22,7 +24,9 @@
 /// This page will be inserted into the _wrapper page by Launchpad.
 
 <details class='bordered padded-more white centered narrow-width'>
-    <summary class='pointer'><strong>Guestbook for <span id='guestbook-name'>${{ gb.info.name }}</span></strong></summary>
+    <summary class='pointer'>
+        <strong>Guestbook for <span id='guestbook-name'>${{ gb.info.name }}</span></strong>
+    </summary>
 
     <p class='block-margin text-spaced'>
         Scan the QR code below to access the guestbook on your device.
@@ -68,6 +72,7 @@
     <details class='bordered padded-more white centered narrow-width'>
         <summary class='pointer'><strong>Edit the guestbook</strong></summary>
         <panel class='top-margin'>
+        /// Use a server-action for the form submit event to execute the closure defined above
         <form on-submit=${ _{ t -> editGuestbook(t) }}>
             <label for='event-name'>Event Name:</label>
             <input name='name' required
@@ -92,6 +97,7 @@
 
     /// If the user hasn't signed the guestbook yet, show the form to sign it.
     <strong>Sign the guestbook.</strong>
+    /// Server-actions can also be defined inline
     <form on-submit='${ _{ t -> gb.addParticipant(t.name, t.email, t.getBool('public'), t.message, cookie); [ '@reload' ] }}'>
         <input name='name' required
                type='text'
