@@ -1,4 +1,5 @@
 <%@ page import="spaceport.computer.memory.physical.Document; spaceport.computer.memory.virtual.Cargo" %>
+
 ///
 ///  Provides a vessel (wrapper) for the guestbook pages.
 ///
@@ -9,7 +10,7 @@
     <title>Guestbook.ing</title>
     <link rel='stylesheet' href='/assets/spacewalk.css'>
     /// Provide a CSS file for the printing a poster for the guestbook
-    <link rel='stylesheet' href='/assets/print.css?${ 6.randomID() }'>
+    <link rel='stylesheet' href='/assets/print.css'>
     <script src='/assets/qrcode.min.js' type='application/javascript'></script>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     /// Page meta tags for SEO/discoverability
@@ -32,7 +33,7 @@
     </a>
 
     <main>
-        /// Launchpad will insert the 'parts' here
+        /// Launchpad will insert the 'parts' that it assembles here
         <payload/>
     </main>
 
