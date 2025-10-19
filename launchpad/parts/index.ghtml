@@ -30,12 +30,16 @@
     </panel>
 </details>
 
-///
-/// This is what's shown when a new guestbook is created.
-/// It will show a QR code that links to the guestbook.
-///
 
 <% } else if (context.method == 'POST') {
+
+    //
+    // This is what's executed and shown when a new guestbook is created
+    // using the data from the form above.
+    // It will show a QR code that links to the guestbook, and provides
+    // a button to print a 'poster' with the name of the event
+    // and the corresponding QR code.
+    //
 
     Guestbook gb = Guestbook.getNew('guestbooks') as Guestbook
 
@@ -44,12 +48,15 @@
     gb.info.owner_cookie = cookies.get('spaceport-uuid')
     gb.info.open = true // Default to open, so it can be signed!
 
+    // Persist this Guestbook Document in the database
     gb.save()
 
 %>
 
 <details open class='bordered padded-more white centered narrow-width'>
-    <summary class="pointer"><strong>Guestbook for <span id='guestbook-name'>${ data.name }</span></strong></summary>
+    <summary class="pointer">
+        <strong>Guestbook for <span id='guestbook-name'>${ data.name }</span></strong>
+    </summary>
     <p class='more-block-margin text-spaced'>
         Scan the QR code below to access the guestbook.
     </p>
