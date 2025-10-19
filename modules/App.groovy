@@ -23,26 +23,25 @@ class App {
     }
 
     
-    // Launchpad is Spaceport's templating engine
-    // with other features like server-side elements,
-    // server actions, and reactivity
+    // Launchpad is Spaceport's templating engine that provides the ability to
+    // make pages dynamic with features like variablot interpolation, server
+    // actions, server-side elements, and property reactivity
     static def launchpad = new Launchpad()
 
 
-    // The index page will serve as the main page, allowing
-    // users to create events and view events they have
-    // interacted with.
+    // The index page will serve as the main page, allowing users to create 
+    // new events, and also view events they have interacted with.
     @Alert('on /index.html hit')
     static _index(HttpResult r) {
-        Command.println(r.context.request.method)
         launchpad.assemble([ 'index.ghtml', 'history.ghtml' ]).launch(r, '_wrapper.ghtml')
     }
 
 
-    // This route will serve as the view into the guestbook
-    // by matching the guestbook ID in the URL.
+    // This route will serve as the view into the guestbook by using a regular-expression
+    // routing alert, matching the guestbook ID in the URL with a match group.
     @Alert('~on /g/(.*) hit')
     static _event(HttpResult r) {
+        // r.matches[0] is now available to the template
         launchpad.assemble([ 'guestbook.ghtml' ]).launch(r, '_wrapper.ghtml')
     }
 
