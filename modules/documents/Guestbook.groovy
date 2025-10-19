@@ -14,26 +14,27 @@ import spaceport.computer.memory.physical.ViewDocument
  */
 class Guestbook extends Document {
 
-    def type = 'guestbook' // Type of document, used for views
+    def type = 'guestbook' // Sets to 'type' of Document, used in the ViewDocument below
 
 
     //
-    // Static methods are called when the class is loaded
+    // The 'on initialized' @Alert is called when the class is loaded
     //
 
     @Alert('on initialized')
     static _view(Result r) {
 
         // Create a 'view' in the database that lists all of the guestbooks
-        // and their participants
+        // and their participants (identified by their Session Cookie)
         ViewDocument.get('views', 'guestbooks')
                 .setViewIfNeeded('all', '''
-
+            // JavaScript, processed by CouchDB (Spaceport's back-end database)
             function(doc) {
                 if (doc.type == 'guestbook') {
                     // Only need the cookie of the participant for this view
                     const participantCookies = doc.participants
                         .map(participant => participant.cookie);
+                    // Add to the view
                     emit(doc.info.owner_cookie, { 
                         info: doc.info, 
                         participants: participantCookies
@@ -50,20 +51,12 @@ class Guestbook extends Document {
 
 
     // Define the custom properties that will be serialized to the database
-    // when the Document is saved/updated.
+    // when the Document is saved and/or updated.
     def customProperties = [ 'info', 'participants' ]
 
-
-    // Define a schema for the guestbook info
-    static class GuestbookInfoSchema {
-        String name         // Event name
-        String email        // Event owner email
-        String owner_cookie // Event owner UUID
-        Boolean open        // Whether the guestbook can be signed (true) or not (false)
-    }
-
-
-    // Define a schema for the participants
+    
+    // Define a schema for the participants; optional, but helps keep the
+    // data strongly typed when interacting with it inside a template
     static class ParticipantSchema {
         String name          // Participant name
         String email         // Participant email
@@ -78,17 +71,25 @@ class Guestbook extends Document {
     List<ParticipantSchema> participants = []
 
 
-    // Info is the information about the event
+    // Define a schema for the guestbook info
+    static class GuestbookInfoSchema {
+        String name         // Event name
+        String email        // Event owner email
+        String owner_cookie // Event owner UUID
+        Boolean open        // Whether the guestbook can be signed (true) or not (false)
+    }
+
+    // Info is the specific information about the event
     GuestbookInfoSchema info = new GuestbookInfoSchema()
 
 
-    // Add a participant to the guestbook
+    // Adds a participant to the guestbook
     void addParticipant(String name, String email, Boolean public_email, String message, String cookie) {
 
         if (!isOpen()) return // If the guestbook is not open, do not add a participant
 
-        def participant = new ParticipantSchema()
-                .tap {
+        def participant = new ParticipantSchema().tap {
+            // Tapping the new object brings its properties into scope as 'it'
             it.name = name.clean()    // Clean String variables to prevent XSS
             it.message = message.clean()
             it.email = email.clean()
